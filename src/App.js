@@ -10,8 +10,8 @@ function App()
 
 	return(
 		<>
-			<Layout connected={connected}>
-				<BrowserRouter>
+			<BrowserRouter>
+				<Layout connected={connected}>
 					<Routes>
 						<Route path="/">
 							<Route index element={<Home />} />
@@ -19,8 +19,8 @@ function App()
 							<Route path="*" element={<p>404, not found</p>} /> 
 						</Route>
 					</Routes>
-				</BrowserRouter>
-			</Layout>
+				</Layout>
+			</BrowserRouter>
 		</>
 	)
 }
