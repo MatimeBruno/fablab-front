@@ -1,79 +1,96 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import FormHelperText from '@mui/material/FormHelperText';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Button from '@mui/material/Button';
+import ChooseSpace from './ChooseSpace';
+import DateTimeSelect from './DateTimeSelect';
 
-const spaces = ["Imprimante 3d", "montage/réparation PC", "Co-working"];
+const steps = ["Choix de l'espace", "Choix de la date et l'heure", 'Récapitulatif'];
 
 const Reservation = () => {
-	const [checked, setChecked] = useState([]);
-	const indeterminateBool = checked.length > 0 && spaces.length !== checked.length;
+	const [activeStep, setActiveStep] = useState(0);
+	const [skipped, setSkipped] = useState(new Set());
+	const [isStepIsValid, setIsStepIsValid] = useState(null);
+	const [checked, setChecked] = useState([]);// Checked space (step 1)
 
-	const handleParentChange = (e) => {
-		if (e.target.checked)
-		{
-			setChecked(spaces);
-		} 
-		else
-		{
-			setChecked([]);
-		}
+	const isStepSkipped = (step) => {
+		return skipped.has(step);
 	};
 
-	const handleChange = (e) => {
-		if (e.target.checked)
+	const handleNext = () => {
+		if (isStepIsValid)
 		{
-			//insert the space in checked array
-			setChecked(checkedList => [...checkedList, e.target.value]);
+			return;// if step is invalid leave the function
 		}
-		else
+
+		let newSkipped = skipped;
+
+		if (isStepSkipped(activeStep))
 		{
-			//remove the space from checked array
-			setChecked(
-				(checkedList) => checkedList.filter(
-					(checkedValue) => checkedValue !== e.target.value
-				)
-			); 
+			newSkipped = new Set(newSkipped.values());
+			newSkipped.delete(activeStep);
 		}
+
+		setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		setSkipped(newSkipped);
+	};
+
+	const handleBack = () => {
+		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
 
 	return (
-		<div>
-			<FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-				<FormLabel component="legend">Quel espace voulez vous réserver ?</FormLabel>
-				<FormControlLabel
-					label="Espaces"
-					control={
-						<Checkbox
-							checked={spaces.length === checked.length}
-							indeterminate={indeterminateBool}
-							onChange={handleParentChange}
-						/>
+		<Box sx={{ width: '100%', p:5 }}>
+			<Stepper activeStep={activeStep}>
+				{steps.map((label, index) => {
+					const stepProps = {};
+					const labelProps = {};
+					if (isStepSkipped(index)) {
+						stepProps.completed = false;
 					}
-				/>
-				<Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+					return (
+						<Step key={label} {...stepProps}>
+							<StepLabel {...labelProps}>{label}</StepLabel>
+						</Step>
+					);
+				})}
+			</Stepper>
+			<>
+				<Box component="div" sx={{ p: 5, display:"flex", justifyContent:"center"}}>
 					{
-						spaces.map((space, i)=>(
-							<FormControlLabel
-								key={i}
-								label={space}
-								control={
-									<Checkbox 
-										checked={checked.includes(space)} 
-										onChange={handleChange}
-										value={space}
-									/>
-								}
+						(activeStep === 0)?
+							<ChooseSpace 
+								setIsStepIsValid={setIsStepIsValid}
+								setChecked={setChecked}
+								checked={checked}
 							/>
-						))
+							:
+							(activeStep === 1)?
+								<DateTimeSelect/>
+								:
+								""
+
 					}
 				</Box>
-				<FormHelperText>Choisissez au moins un espace à réservé</FormHelperText>
-			</FormControl>
-		</div>
+				<Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+					<Button
+						color="inherit"
+						disabled={activeStep === 0}
+						onClick={handleBack}
+						sx={{ mr: 1 }}
+					>
+						Précédent
+					</Button>
+					<Box sx={{ flex: '1 1 auto' }} />
+
+					<Button onClick={handleNext}>
+						{activeStep === steps.length - 1 ? 'Fini' : 'Suivant'}
+					</Button>
+				</Box>
+			</>
+		</Box>
 	);
 }
 

@@ -21,7 +21,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 //My imports
 import EDN_logo from '../img/LOGO_EDN_2021_WEB.png';
-import './responsiveAppBar.css';
+import '../style/responsiveAppBar.css';
 
 const pages = ['Accueil', 'Réservations'];
 const link = ['/', 'reservation'];
@@ -98,9 +98,8 @@ const ResponsiveAppBar = (props) => {
 						<Stack direction="row" spacing={2} sx={{ml:10}}>
 						{
 							props.connected && pages.map((page, i) => (
-								<Link to={link[i]}>
+								<Link to={link[i]} key={page}>
 									<Button
-										key={page}
 										sx={{color:"black"}}
 										startIcon={iconMenu[i] && iconMenu[i]}
 									>
