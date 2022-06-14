@@ -1,6 +1,6 @@
 // React imports
 import React, { useState } from 'react';
-import { useHref } from "react-router-dom";
+import { Link } from "react-router-dom";
 //Material layout imports
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -21,6 +21,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 //My imports
 import EDN_logo from '../img/LOGO_EDN_2021_WEB.png';
+import './responsiveAppBar.css';
 
 const pages = ['Accueil', 'Réservations'];
 const link = ['/', 'reservation'];
@@ -77,9 +78,11 @@ const ResponsiveAppBar = (props) => {
 										}}
 									>
 										{pages.map((page, i) => (
-											<MenuItem key={page} usehref={link[i]}>
+											<MenuItem key={page}>
+												<Link to={link[i]}>
 													{iconMenu[i] && iconMenu[i]}
 													<Typography textAlign="center">&nbsp;{page}</Typography>
+												</Link>
 											</MenuItem>
 										))}
 									</Menu>
@@ -95,14 +98,15 @@ const ResponsiveAppBar = (props) => {
 						<Stack direction="row" spacing={2} sx={{ml:10}}>
 						{
 							props.connected && pages.map((page, i) => (
-								<Button
-									key={page}
-									sx={{color:"black"}}
-									startIcon={iconMenu[i] && iconMenu[i]}
-									usehref={link[i]}
-								>
-									{page}
-								</Button>
+								<Link to={link[i]}>
+									<Button
+										key={page}
+										sx={{color:"black"}}
+										startIcon={iconMenu[i] && iconMenu[i]}
+									>
+										{page}
+									</Button>
+								</Link>
 							))
 						}
 						</Stack>
