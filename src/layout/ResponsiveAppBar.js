@@ -116,9 +116,11 @@ const ResponsiveAppBar = (props) => {
 						props.connected && 
 							<Box sx={{ flexGrow: 0 }}>
 								<Tooltip title="Compte">
+									<Link to='compte'>
 									<IconButton sx={{ p: 0 }}>
 										<Avatar alt="Remy Sharp" />
 									</IconButton>
+									</Link>
 								</Tooltip>
 							</Box>
 					}
