@@ -4,8 +4,9 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import FormHelperText from '@mui/material/FormHelperText';
 
-const spaces = ["Espace 1", "Espace 2", "Espace 3", "Espace 4"];
+const spaces = ["Imprimante 3d", "montage/réparation PC", "Co-working"];
 
 const Reservation = () => {
 	const [checked, setChecked] = useState([]);
@@ -70,6 +71,7 @@ const Reservation = () => {
 						))
 					}
 				</Box>
+				<FormHelperText>Choisissez au moins un espace à réservé</FormHelperText>
 			</FormControl>
 		</div>
 	);
