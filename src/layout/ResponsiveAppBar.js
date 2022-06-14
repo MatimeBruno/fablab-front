@@ -18,16 +18,17 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import Avatar from '@mui/material/Avatar';
 import HomeIcon from '@mui/icons-material/Home';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 //My imports
 import EDN_logo from '../img/LOGO_EDN_2021_WEB.png';
 import './responsiveAppBar.css';
 
-const pages = ['Accueil', 'Réservations'];
-const link = ['/', 'reservation'];
+const pages = ['Accueil', 'Réservations', 'Compte'];
+const link = ['/', 'reservation', 'compte'];
 
 const ResponsiveAppBar = (props) => {
-	const iconMenu = [<HomeIcon/>, <CalendarMonthIcon/>];
+	const iconMenu = [<HomeIcon/>, <CalendarMonthIcon/>, <AccountCircleIcon/>];
 	const [showMobileMenu, setShoMobileMenu] = useState(null);
 	const openMenuMobile = Boolean(showMobileMenu);
 
@@ -111,17 +112,6 @@ const ResponsiveAppBar = (props) => {
 						}
 						</Stack>
 					</Box>
-
-					{
-						props.connected && 
-							<Box sx={{ flexGrow: 0 }}>
-								<Tooltip title="Compte">
-									<IconButton sx={{ p: 0 }}>
-										<Avatar alt="Remy Sharp" />
-									</IconButton>
-								</Tooltip>
-							</Box>
-					}
 				</Toolbar>
 			</Container>
 		</AppBar>
