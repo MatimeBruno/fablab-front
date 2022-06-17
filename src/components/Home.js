@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,6 +13,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import {userData} from '../actions/user';
 
 // Temporary for visual desmontration --------------------------
 function createData(date, time, reservedSpace)
