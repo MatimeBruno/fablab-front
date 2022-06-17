@@ -7,6 +7,8 @@ import CardContent from '@mui/material/CardContent';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import {logout, updatePassword, userData} from '../actions/user';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import '../style/compte.css';
 
 const Compte = (props) => {
