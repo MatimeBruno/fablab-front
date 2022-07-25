@@ -4,8 +4,8 @@ const login = async (email, password) => {
 	try
 	{
 		const payload = {
-			email:email,
-			password:password
+			"email":email,
+			"password":password
 		};
 
 		const response = await fablab_api.post('/login', payload);

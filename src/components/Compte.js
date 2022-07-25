@@ -7,8 +7,6 @@ import CardContent from '@mui/material/CardContent';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import {logout, updatePassword, userData} from '../actions/user';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import '../style/compte.css';
 
 const Compte = (props) => {
@@ -23,14 +21,19 @@ const Compte = (props) => {
 	}
 
 	const getInfo = async () => {
-		const getUserData = await userData(props.user);
-		setUserInfo(getUserData);
+		if (props.user !== null)
+		{
+			const getUserData = await userData(props.user);
+			setUserInfo(getUserData);
+		}
 	}
 
 	const handleChangePassword = async () => {
-		const updatedPassword = await updatePassword(props.user, oldPassword, newPassword);
-		console.log(updatedPassword);
-		setPasswordIsUpdated(updatedPassword);
+		if (props.user !== null)
+		{
+			const updatedPassword = await updatePassword(props.user, oldPassword, newPassword);
+			setPasswordIsUpdated(updatedPassword);
+		}
 	}
 
 	useEffect(()=>{

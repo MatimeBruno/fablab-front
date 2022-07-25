@@ -15,10 +15,10 @@ function App()
 			{
 				setUser(null);
 			}
-		  }, 60 * 1000);
+		}, 60 * 1000);
 
 		// clearing interval
-		  return () => clearInterval(checkUser);
+		return () => clearInterval(checkUser);
 	})
 
 	return(
@@ -27,8 +27,8 @@ function App()
 				<Layout user={user} setUser={setUser}>
 					<Routes>
 						<Route path="/">
-							<Route index element={<Home />} />
-							<Route path="reservation" element={<Reservation />} />
+							<Route index element={<Home user={user} />} />
+							<Route path="reservation" element={<Reservation  user={user} />} />
 							<Route path="compte" element={<Compte setUser={setUser} user={user}/>} />
 							<Route path="*" element={<p>404, not found</p>} /> 
 						</Route>

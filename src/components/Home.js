@@ -1,4 +1,6 @@
-import {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,95 +15,251 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import {userData} from '../actions/user';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import { getMyReserv, getSpaceReserv } from '../actions/reservation';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Dialog from '@mui/material/Dialog';
+import Collapse from '@mui/material/Collapse';
+import { QRCodeSVG } from 'qrcode.react';
 
-// Temporary for visual desmontration --------------------------
-function createData(date, time, reservedSpace)
-{
-	return { date, time, reservedSpace };
-}
-
-const rows = [
-	createData('03/09/2022', '2 h', 'Imprimante 3d'),
-	createData('06/09/2022', '1 h', 'Montage/Réparation PC'),
-	createData('10/11/2022', "30 min", 'Co-working'),
-];
 
 const Home = (props) => {
-	const [sortBy, setSortBy] = useState("DESC");
+	const [sortBy, setSortBy] = useState("o1");
+	const [userReservs, setUserSetReserv] = useState([]);
+	const [openDetails, setOpenDetails] = useState(false);
+	const [reservedSpace, setReservedSpace] = useState(null);
+	const [details, setDetails] = useState(null);
+	const [expandedPin, setExpandedPin] = useState(false);
+	const [expandedQrCode, setExpandedQrCode] = useState(false);
+
+	const handleExpandClick = (expandType) => {
+		if (expandType === "pin") {
+			setExpandedPin(!expandedPin);
+			setExpandedQrCode(false);
+		}
+
+		if (expandType === "qrCode") {
+			setExpandedQrCode(!expandedQrCode);
+			setExpandedPin(false);
+		}
+	}
+
+	const getSpaces = async (id) => {
+		const spacesList = await getSpaceReserv(id);
+		setReservedSpace(spacesList)
+	}
+
+	const handleClickOpen = (id) => {
+		setOpenDetails(true);
+		setDetails(id);
+		// (reservedSpace === null) && getSpaces();
+	};
+
+	const handleClose = () => {
+		setOpenDetails(false);
+		setDetails(null);
+	};
+
+	const getUserReservs = async () => {
+		const reservList = await getMyReserv(props.user, sortBy);
+		setUserSetReserv(reservList);
+	}
+
+	useEffect(() => {
+		(userReservs.length === 0) && getUserReservs();
+	})
 
 	const handleSortChange = (e) => {
 		setSortBy(e.target.value);
+		setUserSetReserv([]);
 	}
 
-	return(
-		<Box sx={{ width: '100%', padding:"20% 0%" }}>
-			<Paper sx={{ width: '100%', mb: 2 }}>
-				<Toolbar
-					sx={{
-						pl: { sm: 2 },
-						pr: { xs: 1, sm: 1 },
-						mb: 2
-					}}
-				>
-					<Typography
-						sx={{ flex: '1 1 100%' }}
-						variant="h6"
-						id="tableTitle"
-						component="div"
-					>
-						Mes réservations
-					</Typography>
-					<FormControl fullWidth>
-						<InputLabel id="sort-label">Trier par</InputLabel>
-						<Select
-							labelId="sort-label"
-							id="sort-select"
-							value={sortBy}
-							label="Trier par"
-							onChange={handleSortChange}
+	return (
+		<Box sx={{ width: '100%', padding: "20% 0%" }}>
+			{
+				(userReservs.length > 0) ?
+					<Paper sx={{ width: '100%', mb: 2 }}>
+						<Toolbar
+							sx={{
+								pl: { sm: 2 },
+								pr: { xs: 1, sm: 1 },
+								mb: 2
+							}}
 						>
-							<MenuItem value="DESC">Date (réservations récentes)</MenuItem>
-							<MenuItem value="ASC">Date (réservations anciennes)</MenuItem>
-							<MenuItem value="Space">Espace réservé</MenuItem>
-						</Select>
-					</FormControl>
-				</Toolbar>
-				<TableContainer component={Paper}>
-					<Table sx={{ minWidth: 650 }} aria-label="simple table">
-						<TableHead>
-							<TableRow>
-								<TableCell>
-									<strong>Date</strong>
-								</TableCell>
-								<TableCell>
-									<strong>Temps</strong>
-								</TableCell>
-								<TableCell>
-									<strong>Espace réservé</strong>
-								</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{
-								rows.map((row, i) => (
-									<TableRow
-										key={i}
-									>
-										<TableCell component="th" scope="row">
-											{row.date}
+							<Typography
+								sx={{ flex: '1 1 100%' }}
+								variant="h6"
+								id="tableTitle"
+								component="div"
+							>
+								Mes réservations
+							</Typography>
+							<FormControl fullWidth>
+								<InputLabel id="sort-label">Trier par</InputLabel>
+								<Select
+									labelId="sort-label"
+									id="sort-select"
+									value={sortBy}
+									label="Trier par"
+									onChange={handleSortChange}
+								>
+									<MenuItem value="o1">Date (réservations récentes)</MenuItem>
+									<MenuItem value="o2">Date (réservations anciennes)</MenuItem>
+								</Select>
+							</FormControl>
+						</Toolbar>
+						<TableContainer component={Paper}>
+							<Table sx={{ minWidth: 650 }} aria-label="simple table">
+								<TableHead>
+									<TableRow>
+										<TableCell>
+											<strong>Date de début</strong>
 										</TableCell>
-										<TableCell>{row.time}</TableCell>
-										<TableCell>{row.reservedSpace}</TableCell>
+										<TableCell>
+											<strong>Date de fin</strong>
+										</TableCell>
+										<TableCell>
+											<strong>Créneau horaire</strong>
+										</TableCell>
+										<TableCell>
+											{/* No header for this column */}
+										</TableCell>
 									</TableRow>
-								))
-							}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Paper>
+								</TableHead>
+								<TableBody>
+									{
+										userReservs.map((row, i) => {
+											const dateStartValue = new Date(row.date_debut_resa);
+											const dateEndValue = new Date(row.date_fin_resa);
+											const dateStartFormat = dateStartValue.toLocaleDateString('fr-FR', { weekday: "long", year: "numeric", month: "short", day: "numeric" });
+											const startHour = dateStartValue.getHours();
+											const dateEndFormat = dateEndValue.toLocaleDateString('fr-FR', { weekday: "long", year: "numeric", month: "short", day: "numeric" });
+											const endHour = dateEndValue.getHours();
+											const detailsData = {
+												id: row.id_reservation,
+												dateStart: dateStartFormat,
+												dateEnd: dateEndFormat,
+												startHour: startHour,
+												endHour: endHour,
+												pin: row.pin
+											}
+
+											return (
+												<TableRow
+													key={i}
+												>
+													<TableCell component="th" scope="row">
+														{dateStartFormat}
+													</TableCell>
+													<TableCell>
+														{dateEndFormat}
+													</TableCell>
+													<TableCell>
+														{`${startHour}h - ${endHour}h`}
+													</TableCell>
+													<TableCell>
+														<Button size="small" onClick={() => handleClickOpen(detailsData)}>
+															Voir les détails
+														</Button>
+													</TableCell>
+												</TableRow>
+											)
+										})
+									}
+								</TableBody>
+							</Table>
+						</TableContainer>
+						{
+							openDetails && (
+							<Dialog
+								open={openDetails}
+								aria-labelledby="customized-dialog-title"
+								onClose={handleClose}
+							>
+								<DialogTitle id="customized-dialog-title" onClose={handleClose}>
+									Réservation
+									<IconButton
+										aria-label="close"
+										onClick={handleClose}
+										sx={{
+											position: 'absolute',
+											right: 8,
+											top: 8,
+											color: (theme) => theme.palette.grey[500],
+										}}
+									>
+										<CloseIcon />
+									</IconButton>
+								</DialogTitle>
+								<DialogContent dividers>
+									<Card sx={{ maxWidth: 345 }}>
+										<CardHeader
+											title="Utilisable à partir du"
+											subheader={`${details.dateStart} à ${details.startHour}h`}
+										/>
+										<CardContent>
+											<Typography variant="body2" color="text.secondary">
+												Attention : votre code pin est strcitement personnel ne le montrer à personne
+											</Typography>
+										</CardContent>
+										<CardActions disableSpacing>
+											<Button
+												onClick={() => handleExpandClick("qrCode")}
+											>
+												{expandedQrCode ? "Cacher" : "Montrer"} le QR-code
+											</Button>
+											<Button
+												onClick={() => handleExpandClick("pin")}
+											>
+												{expandedPin ? "Cacher" : "Montrer"} le code pin
+											</Button>
+										</CardActions>
+										<Collapse in={expandedPin} timeout="auto" unmountOnExit>
+											<CardContent>
+												<Typography variant='h5'>{details.pin}</Typography>
+												<Typography>
+													Expire le {details.dateEnd} à {details.endHour}h
+												</Typography>
+											</CardContent>
+										</Collapse>
+										<Collapse in={expandedQrCode} timeout="auto" unmountOnExit>
+											<CardContent>
+												<QRCodeSVG value={details.pin} />
+												<Typography>
+													Expire le {details.dateEnd} à {details.endHour}h
+												</Typography>
+											</CardContent>
+										</Collapse>
+									</Card>
+								</DialogContent>
+							</Dialog>
+							)
+						}
+					</Paper>
+					:
+					<Card sx={{ minWidth: 275 }}>
+						<CardContent>
+							<Typography variant="h5" component="div">
+								Vous n'avez aucune réservation
+							</Typography>
+						</CardContent>
+						<CardActions>
+							<Link to="/reservation">
+								<Button size="small">
+									Je réserve maintenant
+								</Button>
+							</Link>
+						</CardActions>
+					</Card>}
 		</Box>
 	)
+
 }
 
 export default Home;
