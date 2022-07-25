@@ -2,13 +2,13 @@ import ResponsiveAppBar from "./ResponsiveAppBar";
 import Container from '@mui/material/Container';
 import Login from "../components/Login";
 
-const Layout = ({children, connected, ...rest}) => {
+const Layout = ({children, user, setUser}) => {
 	return(
 		<div>
-			<ResponsiveAppBar connected={connected}/>
+			<ResponsiveAppBar user={user}/>
 			<Container maxWidth="md">
 				{
-					(connected)? children : <Login/>
+					(user !== null)? children : <Login setUser={setUser}/>
 				}
 			</Container>
 		</div>

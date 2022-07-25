@@ -12,17 +12,15 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 //Material icons imports
 import MenuIcon from '@mui/icons-material/Menu';
-import Avatar from '@mui/material/Avatar';
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 //My imports
 import EDN_logo from '../img/LOGO_EDN_2021_WEB.png';
-import './responsiveAppBar.css';
+import '../style/responsiveAppBar.css';
 
 const pages = ['Accueil', 'Réservations', 'Compte'];
 const link = ['/', 'reservation', 'compte'];
@@ -43,7 +41,7 @@ const ResponsiveAppBar = (props) => {
 					{/* Mobile */}
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
 						{
-							props.connected ?
+							(props.user !== null) ?
 								<>
 									<IconButton
 										size="large"
@@ -98,10 +96,9 @@ const ResponsiveAppBar = (props) => {
 						<img src={EDN_logo} alt="Logo de l'EDN" width="20%"/>
 						<Stack direction="row" spacing={2} sx={{ml:10}}>
 						{
-							props.connected && pages.map((page, i) => (
-								<Link to={link[i]}>
+							props.user && pages.map((page, i) => (
+								<Link to={link[i]} key={page}>
 									<Button
-										key={page}
 										sx={{color:"black"}}
 										startIcon={iconMenu[i] && iconMenu[i]}
 									>
