@@ -32,6 +32,19 @@ const DateTimeSelect = (props) => {
 	const [error, setError] = useState(false);
 	const today = new Date();
 	today.setDate(today.getDate() + 1); //La date minimum et selectionnée par défaut est la date du lendemain
+	/**
+	 * Cette fonction vérifie si la date n'est ni un samedi ni un dimanche, si c'est le cas la fonction 
+	 * passe au jour suivant pour au final retourné un jour ouvré 
+	 * @param {Date} date
+	 * @returns {Date} une date correspondant à un jour ouvré
+	 */
+	const valideDate = (date) => {
+		while (isWeekend(date))
+		{
+			date.setDate(date.getDate() + 1)
+		}
+		return date
+	}
 	//Initialise la selection du calendrier
 	const [rangeDate, setRangeDate] = useState([
 		{
@@ -48,20 +61,6 @@ const DateTimeSelect = (props) => {
 		)
 	})
 	
-	/**
-	 * Cette fonction vérifie si la date n'est ni un samedi ni un dimanche, si c'est le cas la fonction 
-	 * passe au jour suivant pour au final retourné un jour ouvré 
-	 * @param {Date} date
-	 * @returns {Date} une date correspondant à un jour ouvré
-	 */
-	const valideDate = (date) => {
-		while (isWeekend(date))
-		{
-			date.setDate(date.getDate() + 1)
-		}
-		return date
-	}
-
 	/**
 	 * Cette fonction récupère les dates et retire les week-ends de la selection
 	 * @param {Date} startDate - La date de début
