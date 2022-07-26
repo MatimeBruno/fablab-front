@@ -76,7 +76,7 @@ const Home = (props) => {
 	//Récupérer la liste de réservation d'un utilisateur
 	const getUserReservs = async () => {
 		const reservList = await getMyReserv(props.user, sortBy);
-		setUserSetReserv(reservList);
+		(reservList.length > 0) ? setUserSetReserv(reservList) : setUserSetReserv(false);
 	}
 
 	useEffect(() => {
