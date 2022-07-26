@@ -9,12 +9,11 @@ import AlertTitle from '@mui/material/AlertTitle';
 import FormHelperText from '@mui/material/FormHelperText';
 import {getSpaces} from '../../actions/reservation';
 
-// const spaces = ["Imprimante 3d", "Montage/réparation PC", "Co-working"];
-
 const ChooseSpace = (props) => {
 	const [spaces, setSpaces] = useState(null)
 	const indeterminateBool = props.checkedSpace.length > 0 && spaces.length !== props.checkedSpace.length;
 
+	//Récupère la liste d'espaces disponibles
 	const getSpacesData = async () => {
 		const spaces = await getSpaces();
 		setSpaces(spaces)
@@ -25,6 +24,7 @@ const ChooseSpace = (props) => {
 		props.setIsStepIsInvalid(props.checkedSpace.length === 0)
 	})
 
+	//Permet de selectionner toutes les espaces et indiquer l'utilisation de toute la salle
 	const handleParentChange = (e) => {
 		if (e.target.checked)
 		{
@@ -40,9 +40,11 @@ const ChooseSpace = (props) => {
 			props.setCheckedSpace([]);
 		}
 
+		//Si vrai, impossible de passer à l'étape suivante
 		props.setIsStepIsInvalid(props.checkedSpace.length === 0)
 	};
 
+	// Permet de séléctionner ou désélectionner l'espace souhaité
 	const handleChange = (e) => {
 		const spaceId = Number(e.target.value);
 
@@ -60,6 +62,8 @@ const ChooseSpace = (props) => {
 				)
 			); 
 		}
+
+		//Si vrai, impossible de passer à l'étape suivante
 		props.setIsStepIsInvalid(props.checkedSpace.length === 0)
 	};
 

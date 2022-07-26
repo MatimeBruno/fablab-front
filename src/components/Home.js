@@ -1,12 +1,22 @@
+// React import
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import Button from '@mui/material/Button';
+// Material ui table import
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+// Material ui details reservation
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+// QR code
+import { QRCodeSVG } from 'qrcode.react';
+// Material ui
+import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -15,29 +25,27 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import { getMyReserv, getSpaceReserv } from '../actions/reservation';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Dialog from '@mui/material/Dialog';
 import Collapse from '@mui/material/Collapse';
-import { QRCodeSVG } from 'qrcode.react';
-
+// My import 
+import { getMyReserv } from '../actions/reservation';
 
 const Home = (props) => {
 	const [sortBy, setSortBy] = useState("o1");
 	const [userReservs, setUserSetReserv] = useState([]);
 	const [openDetails, setOpenDetails] = useState(false);
-	const [reservedSpace, setReservedSpace] = useState(null);
 	const [details, setDetails] = useState(null);
 	const [expandedPin, setExpandedPin] = useState(false);
 	const [expandedQrCode, setExpandedQrCode] = useState(false);
 
+	/**
+	 * Affiche ou cache le code pin/QR code 
+	 * @param {String} expandType 
+	 */
 	const handleExpandClick = (expandType) => {
 		if (expandType === "pin") {
 			setExpandedPin(!expandedPin);
@@ -50,22 +58,22 @@ const Home = (props) => {
 		}
 	}
 
-	const getSpaces = async (id) => {
-		const spacesList = await getSpaceReserv(id);
-		setReservedSpace(spacesList)
-	}
-
+	/**
+	 * Affiche les détails de la réservation
+	 * @param {Number} id 
+	 */
 	const handleClickOpen = (id) => {
 		setOpenDetails(true);
 		setDetails(id);
-		// (reservedSpace === null) && getSpaces();
 	};
 
+	//Permet la fermeture du modal qui affiche les détails d'une réservation
 	const handleClose = () => {
 		setOpenDetails(false);
 		setDetails(null);
 	};
 
+	//Récupérer la liste de réservation d'un utilisateur
 	const getUserReservs = async () => {
 		const reservList = await getMyReserv(props.user, sortBy);
 		setUserSetReserv(reservList);
@@ -75,6 +83,10 @@ const Home = (props) => {
 		(userReservs.length === 0) && getUserReservs();
 	})
 
+	/**
+	 * Gère la selection du tri (Date (réservations récentes) | Date (réservations anciennes))
+	 * @param {object} e 
+	 */
 	const handleSortChange = (e) => {
 		setSortBy(e.target.value);
 		setUserSetReserv([]);
@@ -128,7 +140,7 @@ const Home = (props) => {
 											<strong>Créneau horaire</strong>
 										</TableCell>
 										<TableCell>
-											{/* No header for this column */}
+											{/* Its empty here but dont worry about that, it's just for the sytle*/}
 										</TableCell>
 									</TableRow>
 								</TableHead>
@@ -177,68 +189,68 @@ const Home = (props) => {
 						</TableContainer>
 						{
 							openDetails && (
-							<Dialog
-								open={openDetails}
-								aria-labelledby="customized-dialog-title"
-								onClose={handleClose}
-							>
-								<DialogTitle id="customized-dialog-title" onClose={handleClose}>
-									Réservation
-									<IconButton
-										aria-label="close"
-										onClick={handleClose}
-										sx={{
-											position: 'absolute',
-											right: 8,
-											top: 8,
-											color: (theme) => theme.palette.grey[500],
-										}}
-									>
-										<CloseIcon />
-									</IconButton>
-								</DialogTitle>
-								<DialogContent dividers>
-									<Card sx={{ maxWidth: 345 }}>
-										<CardHeader
-											title="Utilisable à partir du"
-											subheader={`${details.dateStart} à ${details.startHour}h`}
-										/>
-										<CardContent>
-											<Typography variant="body2" color="text.secondary">
-												Attention : votre code pin est strcitement personnel ne le montrer à personne
-											</Typography>
-										</CardContent>
-										<CardActions disableSpacing>
-											<Button
-												onClick={() => handleExpandClick("qrCode")}
-											>
-												{expandedQrCode ? "Cacher" : "Montrer"} le QR-code
-											</Button>
-											<Button
-												onClick={() => handleExpandClick("pin")}
-											>
-												{expandedPin ? "Cacher" : "Montrer"} le code pin
-											</Button>
-										</CardActions>
-										<Collapse in={expandedPin} timeout="auto" unmountOnExit>
+								<Dialog
+									open={openDetails}
+									aria-labelledby="customized-dialog-title"
+									onClose={handleClose}
+								>
+									<DialogTitle id="customized-dialog-title" onClose={handleClose}>
+										Réservation
+										<IconButton
+											aria-label="close"
+											onClick={handleClose}
+											sx={{
+												position: 'absolute',
+												right: 8,
+												top: 8,
+												color: (theme) => theme.palette.grey[500],
+											}}
+										>
+											<CloseIcon />
+										</IconButton>
+									</DialogTitle>
+									<DialogContent dividers>
+										<Card sx={{ maxWidth: 345 }}>
+											<CardHeader
+												title="Utilisable à partir du"
+												subheader={`${details.dateStart} à ${details.startHour}h`}
+											/>
 											<CardContent>
-												<Typography variant='h5'>{details.pin}</Typography>
-												<Typography>
-													Expire le {details.dateEnd} à {details.endHour}h
+												<Typography variant="body2" color="text.secondary">
+													Attention : votre code pin est strcitement personnel ne le montrer à personne
 												</Typography>
 											</CardContent>
-										</Collapse>
-										<Collapse in={expandedQrCode} timeout="auto" unmountOnExit>
-											<CardContent>
-												<QRCodeSVG value={details.pin} />
-												<Typography>
-													Expire le {details.dateEnd} à {details.endHour}h
-												</Typography>
-											</CardContent>
-										</Collapse>
-									</Card>
-								</DialogContent>
-							</Dialog>
+											<CardActions disableSpacing>
+												<Button
+													onClick={() => handleExpandClick("qrCode")}
+												>
+													{expandedQrCode ? "Cacher" : "Montrer"} le QR-code
+												</Button>
+												<Button
+													onClick={() => handleExpandClick("pin")}
+												>
+													{expandedPin ? "Cacher" : "Montrer"} le code pin
+												</Button>
+											</CardActions>
+											<Collapse in={expandedPin} timeout="auto" unmountOnExit>
+												<CardContent>
+													<Typography variant='h5'>{details.pin}</Typography>
+													<Typography>
+														Expire le {details.dateEnd} à {details.endHour}h
+													</Typography>
+												</CardContent>
+											</Collapse>
+											<Collapse in={expandedQrCode} timeout="auto" unmountOnExit>
+												<CardContent>
+													<QRCodeSVG value={details.pin} />
+													<Typography>
+														Expire le {details.dateEnd} à {details.endHour}h
+													</Typography>
+												</CardContent>
+											</Collapse>
+										</Card>
+									</DialogContent>
+								</Dialog>
 							)
 						}
 					</Paper>

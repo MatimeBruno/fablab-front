@@ -30,10 +30,11 @@ const Reservation = (props) => {
 		return skipped.has(step);
 	};
 
+	//Fonction permettant de passer à l'étape suivante
 	const handleNext = () => {
 		if (isStepIsInvalid)
 		{
-			return;// if step is invalid leave the function
+			return;// Si l'étape est invalide
 		}
 
 		let newSkipped = skipped;
@@ -48,6 +49,7 @@ const Reservation = (props) => {
 		setSkipped(newSkipped);
 	};
 
+	//Fonction permettant de passer à l'étape précédente
 	const handleBack = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 		(activeStep === 2) && setReservation([]);
@@ -60,11 +62,12 @@ const Reservation = (props) => {
 		}
 	})
 
+	//Formatage et empaquetage des données de réservation pour les envoyées à l'API
 	const lastStep = () => {
 		const hourly = checkedMorningHourly.concat(checkedAfternoonHourly)
 		const filtHourArr = [];
 		const resaArr = [];
-		//filtering hours
+		//Filtre les horaires afin d'éviter les doublons ex.(de 9h-10h à 10h-11h -> 9h à 11h) 
 		hourly.forEach(hour=>{
 			const splitedHour = hour.split("_");
 			const startHour = Number(splitedHour[0]);
@@ -84,9 +87,9 @@ const Reservation = (props) => {
 				filtHourArr.push(endHour);
 			}
 		})
-		//set datetime for each date, each hour
-		let cpt = 0;
 
+		//Formatage des données de réservations
+		let cpt = 0;
 		while (cpt < filtHourArr.length)
 		{
 			const date_debut_resa = new Date(dates.startDate);
@@ -104,6 +107,7 @@ const Reservation = (props) => {
 		return resaArr;
 	}
 
+	//Cette fonction envoi les données de réservation à l'API
 	const submitResevation = async () => {
 		const reservRes = await reserve(props.user, reservations, checkedSpace);
 		setReservStatus(reservRes);

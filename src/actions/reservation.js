@@ -33,7 +33,7 @@ const reserve = async (id_user, reservations, listIdEspace) => {
 const getMyReserv = async (id_user, orderList) => {
 	try
 	{
-		const response = await fablab_api.get(`/user_resa/${id_user}/${orderList}`);
+		const response = await fablab_api.get(`/user_resa/${id_user}&${orderList}`);
 		return response.data;
 	}
 	catch (error)

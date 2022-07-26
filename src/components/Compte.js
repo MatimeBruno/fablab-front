@@ -56,7 +56,7 @@ const Compte = (props) => {
 						Adresse Email : {userInfo && userInfo.email}
 					</Typography>
 					<Typography color="text.secondary">
-						Classe : {userInfo && userInfo.id_classe}
+						Classe : {userInfo && userInfo.intitule}
 					</Typography>
 				</CardContent>
 			</Card>

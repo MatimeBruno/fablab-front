@@ -1,13 +1,14 @@
+//React import
 import React, { useState, useEffect } from 'react';
-// import Calendar from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';
+//React-date import with date-fns
 import { DateRange } from 'react-date-range';
 import { isWeekend } from 'date-fns';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import * as locales from 'react-date-range/dist/locale';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+//Material ui import
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -30,22 +31,8 @@ const DateTimeSelect = (props) => {
 	const [isDateConfirmed, setIsDateConfirmed] = useState(false);
 	const [error, setError] = useState(false);
 	const today = new Date();
-	today.setDate(today.getDate() + 1); // set tomorrow day as min date
-
-	useEffect(()=>{
-		props.setIsStepIsInvalid(
-			props.checkedMorningHourly.length === 0 && props.checkedAfternoonHourly.length === 0
-		)
-	})
-	
-	const valideDate = (date) => {
-		while (isWeekend(date))
-		{
-			date.setDate(date.getDate() + 1)
-		}
-		return date
-	}
-
+	today.setDate(today.getDate() + 1); //La date minimum et selectionnée par défaut est la date du lendemain
+	//Initialise la selection du calendrier
 	const [rangeDate, setRangeDate] = useState([
 		{
 			startDate: valideDate(today),
@@ -54,6 +41,33 @@ const DateTimeSelect = (props) => {
 		}
 	]);
 
+	useEffect(()=>{
+		//Si vrai, impossible de passer à l'étape suivante
+		props.setIsStepIsInvalid(
+			props.checkedMorningHourly.length === 0 && props.checkedAfternoonHourly.length === 0
+		)
+	})
+	
+	/**
+	 * Cette fonction vérifie si la date n'est ni un samedi ni un dimanche, si c'est le cas la fonction 
+	 * passe au jour suivant pour au final retourné un jour ouvré 
+	 * @param {Date} date
+	 * @returns {Date} une date correspondant à un jour ouvré
+	 */
+	const valideDate = (date) => {
+		while (isWeekend(date))
+		{
+			date.setDate(date.getDate() + 1)
+		}
+		return date
+	}
+
+	/**
+	 * Cette fonction récupère les dates et retire les week-ends de la selection
+	 * @param {Date} startDate - La date de début
+	 * @param {Date} endDate - La date de fin
+	 * @returns {Array} un array contenant les dates
+	 */
 	const getDatesInRange = (startDate, endDate) => {
 		const date = new Date(startDate.getTime());
 		
@@ -71,6 +85,11 @@ const DateTimeSelect = (props) => {
 		return dates;
 	}
 
+	/**
+	 * La selection de date est géré par cette fonction, elle enregistre la/les date(s) uniquement
+	 * si le nombre de jour séléctionner est inférieur à 31 (week-end non inclus)
+	 * @param {Array} date
+	 */
 	const handleDateChange = (selection) => {
 		const dateInRanges = getDatesInRange(
 			selection[0].startDate,
@@ -93,10 +112,11 @@ const DateTimeSelect = (props) => {
 		}
 	}
 	
-	const weekends = day => {
-        return isWeekend(day);
-    };
-	
+	/**
+	 * Les horaires séléctionner sont gérer par cette fonction
+	 * @param {Object} e 
+	 * @param {String} period 
+	 */
 	const onHoursSelection = (e, period) => {
 		if(period === "morning")
 		{
@@ -126,11 +146,18 @@ const DateTimeSelect = (props) => {
 				); 
 		}
 
+		//Si vrai, impossible de passer à l'étape suivante
 		props.setIsStepIsInvalid(
 			props.checkedMorningHourly.length === 0 && props.checkedAfternoonHourly.length === 0
 		)
 	}
 
+	/**
+	 * Cette fonction permet de gérer un ensemble de selection ou déselection d'horaire
+	 * par exemple, il est possible gâce à cette fonction de séléctioner d'un clique toutes les heures matinaux 
+	 * @param {Object} e 
+	 * @param {String} period 
+	 */
 	const handleParentChange = (e, period) => {
 		if(period === "morning")
 		{
@@ -173,6 +200,7 @@ const DateTimeSelect = (props) => {
 		)
 	}
 
+	//Cette fontion permet de passer à l'étape suivante une fois les heures 
 	const nextStep = () => {
 		if(props.checkedMorningHourly.length > 0 || props.checkedAfternoonHourly.length > 0)
 		{
@@ -189,7 +217,7 @@ const DateTimeSelect = (props) => {
 					moveRangeOnFirstSelection={false}
 					ranges={rangeDate}
 					locale={locales['fr']}
-					disabledDay={day => weekends(day)}
+					disabledDay={day => isWeekend(day)}
 					minDate={today}
 				/>
 			</div>
