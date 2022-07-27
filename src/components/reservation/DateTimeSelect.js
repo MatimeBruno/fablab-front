@@ -103,8 +103,8 @@ const DateTimeSelect = (props) => {
 			setError(true);
 			setRangeDate([
 				{
-				  startDate: valideDate(today),
-				  endDate: valideDate(today),
+				  startDate: valideDate(selection[0].startDate),
+				  endDate: valideDate(selection[0].endDate),
 				  key: 'selection'
 				}
 			]);
@@ -213,7 +213,7 @@ const DateTimeSelect = (props) => {
 			<div>
 				<DateRange
 					onChange={item => handleDateChange([item.selection])}
-					moveRangeOnFirstSelection={false}
+					moveRangeOnFirstSelection={true}
 					ranges={rangeDate}
 					locale={locales['fr']}
 					disabledDay={day => isWeekend(day)}

@@ -40,9 +40,10 @@ const ResponsiveAppBar = (props) => {
 				<Toolbar disableGutters>
 					{/* Mobile */}
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+						<img src={EDN_logo} alt="Logo de l'EDN" width="100%" sx={{mr: 4,}}/>
 						{
 							(props.user !== null) ?
-								<>
+								<Stack direction="row" spacing={2} sx={{ml:20}}>
 									<IconButton
 										size="large"
 										aria-label="account of current user"
@@ -85,7 +86,7 @@ const ResponsiveAppBar = (props) => {
 											</MenuItem>
 										))}
 									</Menu>
-								</>
+								</Stack>
 								:
 								<img src={EDN_logo} alt="Logo de l'EDN" width="20%" sx={{mr: 4,}}/>
 						}

@@ -10,5 +10,5 @@ RUN npm run build
 # Stage 2
 FROM nginx:1.23.1-alpine
 COPY --from=build-stage /fablab-front/build /usr/share/nginx/html
-EXPOSE 3000
+EXPOSE 8080
 CMD nginx -g 'daemon off;'

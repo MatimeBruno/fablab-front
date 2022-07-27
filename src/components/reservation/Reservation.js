@@ -90,10 +90,13 @@ const Reservation = (props) => {
 
 		//Formatage des données de réservations
 		let cpt = 0;
+		const date_debut_resa = dates.startDate;
+		const date_fin_resa = dates.endDate;
+		date_debut_resa.setUTCDate(date_debut_resa.getDate());
+		date_fin_resa.setUTCDate(date_fin_resa.getDate());
+		
 		while (cpt < filtHourArr.length)
 		{
-			const date_debut_resa = new Date(dates.startDate);
-			const date_fin_resa = new Date(dates.endDate);
 			date_debut_resa.setUTCHours(filtHourArr[cpt]);
 			date_fin_resa.setUTCHours(filtHourArr[cpt+1]);
 			resaArr.push(
@@ -104,6 +107,7 @@ const Reservation = (props) => {
 			)
 			cpt+=2;
 		}
+		console.log(resaArr);
 		return resaArr;
 	}
 
@@ -112,6 +116,7 @@ const Reservation = (props) => {
 		const reservRes = await reserve(props.user, reservations, checkedSpace);
 		setReservStatus(reservRes);
 	}
+
 
 	return (
 		<Box sx={{ width: '100%', p:5 }}>
