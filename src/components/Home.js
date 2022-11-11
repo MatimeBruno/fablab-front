@@ -133,10 +133,7 @@ const Home = (props) => {
 										<TableCell>
 											<strong>Date de début</strong>
 										</TableCell>
-										<TableCell>
-											<strong>Date de fin</strong>
-										</TableCell>
-										<TableCell>
+										<TableCell align="center">
 											<strong>Créneau horaire</strong>
 										</TableCell>
 										<TableCell>
@@ -169,13 +166,10 @@ const Home = (props) => {
 													<TableCell component="th" scope="row">
 														{dateStartFormat}
 													</TableCell>
-													<TableCell>
-														{dateEndFormat}
-													</TableCell>
-													<TableCell>
+													<TableCell align="center">
 														{`${startHour}h - ${endHour}h`}
 													</TableCell>
-													<TableCell>
+													<TableCell align="center">
 														<Button size="small" onClick={() => handleClickOpen(detailsData)}>
 															Voir les détails
 														</Button>
@@ -217,7 +211,7 @@ const Home = (props) => {
 											/>
 											<CardContent>
 												<Typography variant="body2" color="text.secondary">
-													Attention : votre code pin est strcitement personnel ne le montrer à personne
+													Attention : votre code pin et votre code QR est strcitement personnel ne le montrer à personne
 												</Typography>
 											</CardContent>
 											<CardActions disableSpacing>

@@ -20,7 +20,7 @@ const Reservation = (props) => {
 	const [skipped, setSkipped] = useState(new Set());
 	const [isStepIsInvalid, setIsStepIsInvalid] = useState(null);
 	const [checkedSpace, setCheckedSpace] = useState([]);
-	const [dates, setDates] = useState({});
+	const [dates, setDates] = useState([]);
 	const [checkedMorningHourly, setCheckedMorningHourly] = useState([]);
 	const [checkedAfternoonHourly, setCheckedAfternoonHourly] = useState([]);
 	const [reservations, setReservation] = useState([]);
@@ -52,7 +52,13 @@ const Reservation = (props) => {
 	//Fonction permettant de passer à l'étape précédente
 	const handleBack = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
-		(activeStep === 2) && setReservation([]);
+		if(activeStep === 2)
+		{
+			setReservation([]);
+			setCheckedMorningHourly([]);
+			setCheckedAfternoonHourly([]);
+			setDates([]);
+		}
 	};
 
 	useEffect(()=>{
@@ -89,25 +95,29 @@ const Reservation = (props) => {
 		})
 
 		//Formatage des données de réservations
-		let cpt = 0;
-		const date_debut_resa = dates.startDate;
-		const date_fin_resa = dates.endDate;
-		date_debut_resa.setUTCDate(date_debut_resa.getDate());
-		date_fin_resa.setUTCDate(date_fin_resa.getDate());
+		dates.forEach(date => {
+			let cpt = 0;
+			const start_date_instance = new Date(date)
+			const end_date_instance = new Date(date)
+
+			start_date_instance.setUTCDate(start_date_instance.getDate());
+			end_date_instance.setUTCDate(end_date_instance.getDate());
+
+			while (cpt < filtHourArr.length)
+			{
+				start_date_instance.setUTCHours(filtHourArr[cpt]);
+				end_date_instance.setUTCHours(filtHourArr[cpt+1]);
+
+				resaArr.push(
+					{
+						date_debut_resa : start_date_instance.toISOString(),
+						date_fin_resa : end_date_instance.toISOString()
+					}
+				)
+				cpt+=2;
+			}
+		});
 		
-		while (cpt < filtHourArr.length)
-		{
-			date_debut_resa.setUTCHours(filtHourArr[cpt]);
-			date_fin_resa.setUTCHours(filtHourArr[cpt+1]);
-			resaArr.push(
-				{
-					date_debut_resa : date_debut_resa.toISOString(),
-					date_fin_resa : date_fin_resa.toISOString()
-				}
-			)
-			cpt+=2;
-		}
-		console.log(resaArr);
 		return resaArr;
 	}
 
@@ -173,6 +183,7 @@ const Reservation = (props) => {
 												checkedAfternoonHourly={checkedAfternoonHourly}
 												setCheckedAfternoonHourly={setCheckedAfternoonHourly}
 												setDates={setDates}
+												dates={dates}
 												handleNext={handleNext}
 											/>
 											:
@@ -184,21 +195,18 @@ const Reservation = (props) => {
 															(reservations.length > 0) && reservations.map((resaDate, i)=>{
 																const dateStartValue = new Date(resaDate.date_debut_resa);
 																const dateEndValue = new Date(resaDate.date_fin_resa);
-																const dateStartFormat = dateStartValue.toLocaleDateString('fr-FR', { weekday: "long", year: "numeric", month: "short", day: "numeric" });
+																const dateStartFormat = dateStartValue.toLocaleDateString(
+																	'fr-FR',
+																	{ weekday: "long", year: "numeric", month: "short", day: "numeric" }
+																);
 																const startHour = dateStartValue.getUTCHours();
-																const dateEndFormat = dateEndValue.toLocaleDateString('fr-FR', { weekday: "long", year: "numeric", month: "short", day: "numeric" });
 																const endHour = dateEndValue.getUTCHours();
 
 																return(
 																	<ListItem key={`resa-${i}`}>
 																		<ListItemText 
-																			primary={`${startHour}h - ${endHour}h`} 
-																			secondary={
-																				(dateStartValue.getDate() === dateEndValue.getDate())?
-																					`Le ${dateStartFormat}`
-																					:
-																					`Du ${dateStartFormat}, au ${dateEndFormat}`
-																			}
+																			primary={`Le ${dateStartFormat}`} 
+																			secondary={`${startHour}h - ${endHour}h`}
 																		/>
 																	</ListItem>
 																)

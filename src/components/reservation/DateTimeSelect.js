@@ -53,8 +53,11 @@ const DateTimeSelect = (props) => {
 			key: 'selection'
 		}
 	]);
-
+	
 	useEffect(()=>{
+		//Sélectione automatiquement un jour ouvré par défaut
+		(props.dates.length === 0) && props.setDates([rangeDate[0].startDate])
+		
 		//Si vrai, impossible de passer à l'étape suivante
 		props.setIsStepIsInvalid(
 			props.checkedMorningHourly.length === 0 && props.checkedAfternoonHourly.length === 0
@@ -86,7 +89,7 @@ const DateTimeSelect = (props) => {
 
 	/**
 	 * La selection de date est géré par cette fonction, elle enregistre la/les date(s) uniquement
-	 * si le nombre de jour séléctionner est inférieur à 31 (week-end non inclus)
+	   si le nombre de jour séléctionner est inférieur à 31 (week-end non inclus)
 	 * @param {Array} date
 	 */
 	const handleDateChange = (selection) => {
@@ -97,6 +100,7 @@ const DateTimeSelect = (props) => {
 		if (dateInRanges.length <= 31)
 		{
 			setRangeDate(selection);
+			props.setDates(dateInRanges)
 		}
 		else
 		{
@@ -203,7 +207,6 @@ const DateTimeSelect = (props) => {
 	const nextStep = () => {
 		if(props.checkedMorningHourly.length > 0 || props.checkedAfternoonHourly.length > 0)
 		{
-			props.setDates(rangeDate[0])
 			props.handleNext();
 		}
 	}
