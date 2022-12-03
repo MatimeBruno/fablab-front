@@ -67,6 +67,7 @@ const Compte = (props) => {
 					<TextField
 						onChange={(e)=>setOldPassword(e.target.value)} 
 						value={oldPassword} 
+						type="password"
 						id="outlined-basic" 
 						label="Ancien mot de passe" 
 						variant="outlined"
@@ -74,6 +75,7 @@ const Compte = (props) => {
 					<TextField 
 						onChange={(e)=>setNewPassword(e.target.value)} 
 						value={newPassword} 
+						type="password"
 						id="outlined-basic" 
 						label="Nouveau mot de passe" 
 						variant="outlined"
