@@ -184,6 +184,7 @@ const Reservation = (props) => {
 												setCheckedAfternoonHourly={setCheckedAfternoonHourly}
 												setDates={setDates}
 												dates={dates}
+												checkedSpace={checkedSpace}
 												handleNext={handleNext}
 											/>
 											:

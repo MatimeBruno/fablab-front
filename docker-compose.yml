@@ -4,6 +4,6 @@ services:
     build:
       context: .
       args:
-        - REACT_APP_API_URL=http://172.16.9.13:5000
+        - REACT_APP_API_URL=https://geniuslab.onrender.com
     ports:
       - 3000:80

@@ -21,13 +21,18 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import FormHelperText from '@mui/material/FormHelperText';
+import {checkHours} from '../../actions/reservation';
 
-const morning_hours = ["8_9","9_10","10_11","11_12"];
-const afternoon_hours = ["13_14","14_15","15_16","16_17","17_18"];
+// const morning_hours = ["8_9","9_10","10_11","11_12"];
+// const afternoon_hours = ["13_14","14_15","15_16","16_17","17_18"];
 
 const DateTimeSelect = (props) => {
-	const indeterminateMorningBool = props.checkedMorningHourly.length > 0 && morning_hours.length !== props.checkedMorningHourly.length;
-	const indeterminateAfternoonBool = props.checkedAfternoonHourly.length > 0 && afternoon_hours.length !== props.checkedAfternoonHourly.length;
+	const [hours, setHours] = useState({
+		morning_hours:[],
+		afternoon_hours:[]
+	});
+	const indeterminateMorningBool = props.checkedMorningHourly.length > 0 && hours.morning_hours.length !== props.checkedMorningHourly.length;
+	const indeterminateAfternoonBool = props.checkedAfternoonHourly.length > 0 && hours.afternoon_hours.length !== props.checkedAfternoonHourly.length;
 	const [isDateConfirmed, setIsDateConfirmed] = useState(false);
 	const [error, setError] = useState(false);
 	const today = new Date();
@@ -166,7 +171,7 @@ const DateTimeSelect = (props) => {
 		{
 			(e.target.checked)?
 				//insert the hour in checked array
-				props.setCheckedMorningHourly(morning_hours)
+				props.setCheckedMorningHourly(hours.morning_hours)
 				:
 				//remove the hour from checked array
 				props.setCheckedMorningHourly([]); 
@@ -176,7 +181,7 @@ const DateTimeSelect = (props) => {
 		{
 			(e.target.checked)?
 				//insert the hour in checked array
-				props.setCheckedAfternoonHourly(afternoon_hours)
+				props.setCheckedAfternoonHourly(hours.afternoon_hours)
 				:
 				//remove the hour from checked array
 				props.setCheckedAfternoonHourly([]);
@@ -187,8 +192,8 @@ const DateTimeSelect = (props) => {
 			if(e.target.checked)
 			{
 				//insert the hour in checked array
-				props.setCheckedMorningHourly(morning_hours)
-				props.setCheckedAfternoonHourly(afternoon_hours)
+				props.setCheckedMorningHourly(hours.morning_hours)
+				props.setCheckedAfternoonHourly(hours.afternoon_hours)
 			}
 			else
 			{
@@ -201,6 +206,18 @@ const DateTimeSelect = (props) => {
 		props.setIsStepIsInvalid(
 			props.checkedMorningHourly.length === 0 && props.checkedAfternoonHourly.length === 0
 		)
+	}
+
+	const confirmDate = async () => {
+		//Check les heures disponibles
+		const dates = [];
+		props.dates.forEach(date => {
+			date.setUTCDate(date.getDate());
+			dates.push(date)
+		});
+		const checkHoursRes = await checkHours(dates, props.checkedSpace);
+		setHours(checkHoursRes);
+		setIsDateConfirmed(true);
 	}
 
 	//Cette fontion permet de passer à l'étape suivante une fois les heures 
@@ -224,7 +241,7 @@ const DateTimeSelect = (props) => {
 				/>
 			</div>
 			<div style={{textAlign:'center'}}>
-				<Button autoFocus onClick={()=>setIsDateConfirmed(true)}>
+				<Button autoFocus onClick={confirmDate}>
 					Séléctionnez l'heure
 				</Button>
 			</div>
@@ -264,9 +281,9 @@ const DateTimeSelect = (props) => {
 									control={
 										<Checkbox
 											checked={
-												morning_hours.length === props.checkedMorningHourly.length 
+												hours.morning_hours.length === props.checkedMorningHourly.length 
 												&&
-												afternoon_hours.length === props.checkedAfternoonHourly.length
+												hours.afternoon_hours.length === props.checkedAfternoonHourly.length
 											}
 											onChange={(e)=>handleParentChange(e, "daytime")}
 										/>
@@ -278,7 +295,7 @@ const DateTimeSelect = (props) => {
 											label="Toute la matinée"
 											control={
 												<Checkbox
-													checked={morning_hours.length === props.checkedMorningHourly.length}
+													checked={hours.morning_hours.length === props.checkedMorningHourly.length}
 													indeterminate={indeterminateMorningBool}
 													onChange={(e)=>handleParentChange(e, "morning")}
 												/>
@@ -286,7 +303,7 @@ const DateTimeSelect = (props) => {
 										/>
 										<Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
 											{
-												morning_hours.map((hour)=>{
+												hours.morning_hours.map((hour)=>{
 													const splitedHour = hour.split('_');
 													return(
 														<FormControlLabel
@@ -310,7 +327,7 @@ const DateTimeSelect = (props) => {
 											label="Toute l'après-midi"
 											control={
 												<Checkbox
-													checked={afternoon_hours.length === props.checkedAfternoonHourly.length}
+													checked={hours.afternoon_hours.length === props.checkedAfternoonHourly.length}
 													indeterminate={indeterminateAfternoonBool}
 													onChange={(e)=>handleParentChange(e, "afternoon")}
 												/>
@@ -318,7 +335,7 @@ const DateTimeSelect = (props) => {
 										/>
 										<Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
 											{
-												afternoon_hours.map((hour)=>{
+												hours.afternoon_hours.map((hour)=>{
 													const splitedHour = hour.split('_');
 													return(
 														<FormControlLabel
