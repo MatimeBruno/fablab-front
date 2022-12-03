@@ -12,7 +12,7 @@ const Layout = ({children, user, setUser}) => {
 				}
 			</Container>
 			<footer id="main-footer">
-				<img src="https://www.ecoledunumerique.re/wp-content/uploads/2022/02/financeurs-all-edn.png" alt="logos" height="191" usemap="#Map" border="0"/>
+				<img src="https://www.ecoledunumerique.re/wp-content/uploads/2022/02/financeurs-all-edn.png" alt="logos" height="191" useMap="#Map" border="0"/>
 			</footer>
 		</div>
 	)

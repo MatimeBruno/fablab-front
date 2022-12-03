@@ -1,15 +1,9 @@
 version: '3.8'
 services:
-  fablab-font:
+  fablab-front:
     build:
       context: .
       args:
-        - REACT_APP_API_URL=http://172.16.9.13:5000
+        - REACT_APP_API_URL=https://geniuslab.onrender.com
     ports:
-      - 3000:3000
-      - 80:80
-volumes:
-  db:
-networks:
-  backend:
-  frontend:
+      - 3000:80
