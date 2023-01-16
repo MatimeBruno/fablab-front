@@ -53,8 +53,8 @@ const Home = (props) => {
 	const handleRecapDisplay = () => {
 		if (
 			dates.length > 0 &&
-			checkedMorningHourly.length > 0 &&
-			checkedAfternoonHourly.length > 0 &&
+			(checkedMorningHourly.length > 0 ||
+			checkedAfternoonHourly.length > 0) &&
 			checkedSpace.length > 0
 		)
 		{
@@ -65,6 +65,11 @@ const Home = (props) => {
 			setShowRecap(false);
 			setError(true);
 		}
+
+		console.log(dates)
+		console.log(checkedMorningHourly)
+		console.log(checkedAfternoonHourly)
+		console.log(checkedSpace)
 	}
 
 	return (
