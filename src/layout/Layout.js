@@ -6,7 +6,7 @@ const Layout = ({children, user, setUser}) => {
 	return(
 		<div>
 			<ResponsiveAppBar user={user}/>
-			<Container maxWidth="md">
+			<Container style={{maxWidth:"1700px"}}>
 				{
 					(user !== null)? children : <Login setUser={setUser}/>
 				}

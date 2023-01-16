@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './layout/Layout';
 import Home from './components/Home';
-import Reservation from './components/reservation/Reservation';
+import MyReservation from './components/MyReservation';
 import Compte from './components/Compte';
 
 function App()
@@ -28,7 +28,7 @@ function App()
 					<Routes>
 						<Route path="/">
 							<Route index element={<Home user={user} />} />
-							<Route path="reservation" element={<Reservation  user={user} />} />
+							<Route path="myReservation" element={<MyReservation user={user} />} />
 							<Route path="compte" element={<Compte setUser={setUser} user={user}/>} />
 							<Route path="*" element={<p>404, not found</p>} /> 
 						</Route>

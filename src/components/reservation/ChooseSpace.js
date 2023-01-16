@@ -11,17 +11,21 @@ import {getSpaces} from '../../actions/reservation';
 
 const ChooseSpace = (props) => {
 	const [spaces, setSpaces] = useState(null)
-	const indeterminateBool = props.checkedSpace.length > 0 && spaces.length !== props.checkedSpace.length;
+	let indeterminateBool = false;
+
+	if (spaces !== null)
+	{
+		indeterminateBool = indeterminateBool = props.checkedSpace.length > 0 && spaces.length !== props.checkedSpace.length
+	}
 
 	//Récupère la liste d'espaces disponibles
 	const getSpacesData = async () => {
-		const spaces = await getSpaces();
-		setSpaces(spaces)
+		const spacesData = await getSpaces();
+		setSpaces(spacesData);
 	}
 
 	useEffect(()=>{
 		(spaces === null) && getSpacesData();
-		props.setIsStepIsInvalid(props.checkedSpace.length === 0)
 	})
 
 	//Permet de selectionner toutes les espaces et indiquer l'utilisation de toute la salle
@@ -39,9 +43,6 @@ const ChooseSpace = (props) => {
 		{
 			props.setCheckedSpace([]);
 		}
-
-		//Si vrai, impossible de passer à l'étape suivante
-		props.setIsStepIsInvalid(props.checkedSpace.length === 0)
 	};
 
 	// Permet de séléctionner ou désélectionner l'espace souhaité
@@ -62,9 +63,7 @@ const ChooseSpace = (props) => {
 				)
 			); 
 		}
-
-		//Si vrai, impossible de passer à l'étape suivante
-		props.setIsStepIsInvalid(props.checkedSpace.length === 0)
+		props.setIsHoursChecked(false);
 	};
 
 	return (

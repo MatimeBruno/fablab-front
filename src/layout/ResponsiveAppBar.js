@@ -22,8 +22,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import EDN_logo from '../img/LOGO_EDN_2021_WEB.png';
 import '../style/responsiveAppBar.css';
 
-const pages = ['Accueil', 'Réservations', 'Compte'];
-const link = ['/', 'reservation', 'compte'];
+const pages = ['Accueil', 'Mes réservations', 'Compte'];
+const link = ['/', 'myReservation', 'compte'];
 
 const ResponsiveAppBar = (props) => {
 	const iconMenu = [<HomeIcon/>, <CalendarMonthIcon/>, <AccountCircleIcon/>];

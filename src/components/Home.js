@@ -1,271 +1,150 @@
 // React import
-import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
-// Material ui table import
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-// Material ui details reservation
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-// QR code
-import { QRCodeSVG } from 'qrcode.react';
+import React, { useState } from 'react';
+//React-date import with date-fns
+import { isWeekend } from 'date-fns';
 // Material ui
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Dialog from '@mui/material/Dialog';
-import Collapse from '@mui/material/Collapse';
-// My import 
-import { getMyReserv } from '../actions/reservation';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+// My import
+import ChooseSpace from './reservation/ChooseSpace';
+import DateSelect from './reservation/DateSelect';
+import TimeSelect from './reservation/TimeSelect';
+import Reservation from './reservation/Reservation';
+import Item from './componentMIH/Item';
 
 const Home = (props) => {
-	const [sortBy, setSortBy] = useState("o1");
-	const [userReservs, setUserSetReserv] = useState([]);
-	const [openDetails, setOpenDetails] = useState(false);
-	const [details, setDetails] = useState(null);
-	const [expandedPin, setExpandedPin] = useState(false);
-	const [expandedQrCode, setExpandedQrCode] = useState(false);
-
+	const commonHomeStyle = {height:"100%"}
+	//Space states
+	const [checkedSpace, setCheckedSpace] = useState([]);
+	// Date and time states;
+	const [dates, setDates] = useState([]);
+	const [checkedMorningHourly, setCheckedMorningHourly] = useState([]);
+	const [checkedAfternoonHourly, setCheckedAfternoonHourly] = useState([]);
+	const [isHoursChecked, setIsHoursChecked] = useState(true);
+	const today = new Date();
+	today.setDate(today.getDate() + 1); //La date minimum et selectionnée par défaut est la date du lendemain
 	/**
-	 * Affiche ou cache le code pin/QR code 
-	 * @param {String} expandType 
-	 */
-	const handleExpandClick = (expandType) => {
-		if (expandType === "pin") {
-			setExpandedPin(!expandedPin);
-			setExpandedQrCode(false);
+	 * Cette fonction vérifie si la date n'est ni un samedi ni un dimanche, si c'est le cas la fonction 
+	 * passe au jour suivant pour au final retourné un jour ouvré 
+	 * @param {Date} date
+	 * @returns {Date} une date correspondant à un jour ouvré
+	*/
+	const valideDate = (date) => {
+		while (isWeekend(date)) {
+			date.setDate(date.getDate() + 1)
 		}
-
-		if (expandType === "qrCode") {
-			setExpandedQrCode(!expandedQrCode);
-			setExpandedPin(false);
+		return date
+	}
+	//Initialise la selection du calendrier
+	const [rangeDate, setRangeDate] = useState([
+		{
+			startDate: valideDate(today),
+			endDate: valideDate(today),
+			key: 'selection'
 		}
-	}
+	]);
+	//----
+	const [error, setError] = useState(false);
+	const [showRecap, setShowRecap] = useState(false);
 
-	/**
-	 * Affiche les détails de la réservation
-	 * @param {Number} id 
-	 */
-	const handleClickOpen = (id) => {
-		setOpenDetails(true);
-		setDetails(id);
-	};
-
-	//Permet la fermeture du modal qui affiche les détails d'une réservation
-	const handleClose = () => {
-		setOpenDetails(false);
-		setDetails(null);
-	};
-
-	//Récupérer la liste de réservation d'un utilisateur
-	const getUserReservs = async () => {
-		const reservList = await getMyReserv(props.user, sortBy);
-		(reservList.length > 0) ? setUserSetReserv(reservList) : setUserSetReserv(false);
-	}
-
-	useEffect(() => {
-		(userReservs.length === 0) && getUserReservs();
-	})
-
-	/**
-	 * Gère la selection du tri (Date (réservations récentes) | Date (réservations anciennes))
-	 * @param {object} e 
-	 */
-	const handleSortChange = (e) => {
-		setSortBy(e.target.value);
-		setUserSetReserv([]);
+	const handleRecapDisplay = () => {
+		if (
+			dates.length > 0 &&
+			checkedMorningHourly.length > 0 &&
+			checkedAfternoonHourly.length > 0 &&
+			checkedSpace.length > 0
+		)
+		{
+			setShowRecap(true);
+		}
+		else
+		{
+			setShowRecap(false);
+			setError(true);
+		}
 	}
 
 	return (
-		<Box sx={{ width: '100%', padding: "20% 0%" }}>
-			{
-				(userReservs.length > 0) ?
-					<Paper sx={{ width: '100%', mb: 2 }}>
-						<Toolbar
-							sx={{
-								pl: { sm: 2 },
-								pr: { xs: 1, sm: 1 },
-								mb: 2
-							}}
-						>
-							<Typography
-								sx={{ flex: '1 1 100%' }}
-								variant="h6"
-								id="tableTitle"
-								component="div"
-							>
-								Mes réservations
-							</Typography>
-							<FormControl fullWidth>
-								<InputLabel id="sort-label">Trier par</InputLabel>
-								<Select
-									labelId="sort-label"
-									id="sort-select"
-									value={sortBy}
-									label="Trier par"
-									onChange={handleSortChange}
-								>
-									<MenuItem value="o1">Date (réservations récentes)</MenuItem>
-									<MenuItem value="o2">Date (réservations anciennes)</MenuItem>
-								</Select>
-							</FormControl>
-						</Toolbar>
-						<TableContainer component={Paper}>
-							<Table sx={{ minWidth: 650 }} aria-label="simple table">
-								<TableHead>
-									<TableRow>
-										<TableCell>
-											<strong>Date de début</strong>
-										</TableCell>
-										<TableCell align="center">
-											<strong>Créneau horaire</strong>
-										</TableCell>
-										<TableCell>
-											{/* Its empty here but dont worry about that, it's just for the sytle*/}
-										</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{
-										userReservs.map((row, i) => {
-											const dateStartValue = new Date(row.date_debut_resa);
-											const dateEndValue = new Date(row.date_fin_resa);
-											const dateStartFormat = dateStartValue.toLocaleDateString('fr-FR', { weekday: "long", year: "numeric", month: "short", day: "numeric" });
-											const startHour = dateStartValue.getHours();
-											const dateEndFormat = dateEndValue.toLocaleDateString('fr-FR', { weekday: "long", year: "numeric", month: "short", day: "numeric" });
-											const endHour = dateEndValue.getHours();
-											const detailsData = {
-												id: row.id_reservation,
-												dateStart: dateStartFormat,
-												dateEnd: dateEndFormat,
-												startHour: startHour,
-												endHour: endHour,
-												pin: row.pin
-											}
-
-											return (
-												<TableRow
-													key={i}
-												>
-													<TableCell component="th" scope="row">
-														{dateStartFormat}
-													</TableCell>
-													<TableCell align="center">
-														{`${startHour}h - ${endHour}h`}
-													</TableCell>
-													<TableCell align="center">
-														<Button size="small" onClick={() => handleClickOpen(detailsData)}>
-															Voir les détails
-														</Button>
-													</TableCell>
-												</TableRow>
-											)
-										})
-									}
-								</TableBody>
-							</Table>
-						</TableContainer>
-						{
-							openDetails && (
-								<Dialog
-									open={openDetails}
-									aria-labelledby="customized-dialog-title"
-									onClose={handleClose}
-								>
-									<DialogTitle id="customized-dialog-title" onClose={handleClose}>
-										Réservation
-										<IconButton
-											aria-label="close"
-											onClick={handleClose}
-											sx={{
-												position: 'absolute',
-												right: 8,
-												top: 8,
-												color: (theme) => theme.palette.grey[500],
-											}}
-										>
-											<CloseIcon />
-										</IconButton>
-									</DialogTitle>
-									<DialogContent dividers>
-										<Card sx={{ maxWidth: 345 }}>
-											<CardHeader
-												title="Utilisable à partir du"
-												subheader={`${details.dateStart} à ${details.startHour}h`}
-											/>
-											<CardContent>
-												<Typography variant="body2" color="text.secondary">
-													Attention : votre code pin et votre code QR est strcitement personnel ne le montrer à personne
-												</Typography>
-											</CardContent>
-											<CardActions disableSpacing>
-												<Button
-													onClick={() => handleExpandClick("qrCode")}
-												>
-													{expandedQrCode ? "Cacher" : "Montrer"} le QR-code
-												</Button>
-												<Button
-													onClick={() => handleExpandClick("pin")}
-												>
-													{expandedPin ? "Cacher" : "Montrer"} le code pin
-												</Button>
-											</CardActions>
-											<Collapse in={expandedPin} timeout="auto" unmountOnExit>
-												<CardContent>
-													<Typography variant='h5'>{details.pin}</Typography>
-													<Typography>
-														Expire le {details.dateEnd} à {details.endHour}h
-													</Typography>
-												</CardContent>
-											</Collapse>
-											<Collapse in={expandedQrCode} timeout="auto" unmountOnExit>
-												<CardContent>
-													<QRCodeSVG value={details.pin} />
-													<Typography>
-														Expire le {details.dateEnd} à {details.endHour}h
-													</Typography>
-												</CardContent>
-											</Collapse>
-										</Card>
-									</DialogContent>
-								</Dialog>
-							)
-						}
-					</Paper>
-					:
-					<Card sx={{ minWidth: 275 }}>
-						<CardContent>
-							<Typography variant="h5" component="div">
-								Vous n'avez aucune réservation
-							</Typography>
-						</CardContent>
-						<CardActions>
-							<Link to="/reservation">
-								<Button size="small">
-									Je réserve maintenant
-								</Button>
-							</Link>
-						</CardActions>
-					</Card>}
+		<Box sx={{ flexGrow: 1 }}>
+			<br></br>
+			<br></br>
+			<Grid container>
+				<Grid item xs={8} md={8}>
+					<h1 className='text-center'>Réservation</h1>
+				</Grid>
+				<Grid item xs={4} md={4} style={{textAlign:"end"}}>
+					<Button variant="contained" onClick={handleRecapDisplay}>
+						Réserver
+					</Button>
+				</Grid>
+			</Grid>
+			<Grid container spacing={2}>
+				<Grid item xs={12} md={4}>
+					<Item style={commonHomeStyle}>
+						<h3>Espaces à choisir</h3>
+						<ChooseSpace
+							checkedSpace={checkedSpace}
+							setCheckedSpace={setCheckedSpace}
+							setIsHoursChecked={setIsHoursChecked}
+						/>
+					</Item>
+				</Grid>
+				<Grid item xs={12} md={4}>
+					<Item style={commonHomeStyle}>
+						<h3>Date à selectionner</h3>
+						<DateSelect
+							setDates={setDates}
+							dates={dates}
+							checkedSpace={checkedSpace}
+							error={error}
+							setError={setError}
+							rangeDate={rangeDate}
+							setRangeDate={setRangeDate}
+							today={today}
+							setIsHoursChecked={setIsHoursChecked}
+						/>
+					</Item>
+				</Grid>
+				<Grid item xs={12} md={4}>
+					<Item style={commonHomeStyle}>
+						<h3>Créneaux horaires disponibles</h3>
+						<TimeSelect
+							dates={dates}
+							checkedSpace={checkedSpace}
+							checkedMorningHourly={checkedMorningHourly}
+							setCheckedMorningHourly={setCheckedMorningHourly}
+							checkedAfternoonHourly={checkedAfternoonHourly}
+							setCheckedAfternoonHourly={setCheckedAfternoonHourly}
+							setIsHoursChecked={setIsHoursChecked}
+							isHoursChecked={isHoursChecked}
+						/>
+					</Item>
+				</Grid>
+			</Grid>
+			<Reservation
+				user={props.user}
+				dates={dates}
+				checkedMorningHourly={checkedMorningHourly}
+				checkedAfternoonHourly={checkedAfternoonHourly}
+				checkedSpace={checkedSpace}
+				showRecap={showRecap}
+				setShowRecap={setShowRecap}
+			/>
+			<Snackbar
+				open={error}
+				autoHideDuration={6000}
+				onClose={()=>setError(false)}
+				anchorOrigin={{ vertical:"bottom", horizontal:"center" }}
+			>
+				<MuiAlert onClose={()=>setError(false)} severity="error" sx={{ width: '100%' }}>
+					Veuillez séléctionner l'espace, la date et l'heure
+				</MuiAlert>
+			</Snackbar>
 		</Box>
 	)
-
 }
 
 export default Home;

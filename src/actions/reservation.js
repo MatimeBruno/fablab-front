@@ -79,8 +79,9 @@ const checkHours = async (reservations, listIdEspace) => {
 		return hours_data;
 	}
 	catch (error)
-	{	
-		return error.response.data;
+	{
+		// console.log(error.response.data);
+		return false
 	}
 }
 
