@@ -135,16 +135,19 @@ const TimeSelect = (props) => {
 				/>
 				<Box sx={{ display: 'flex', ml: 3 }}>
 					<FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-						<FormControlLabel
-							label="Toute la matinée"
-							control={
-								<Checkbox
-									checked={hours.morning_hours.length === props.checkedMorningHourly.length}
-									indeterminate={indeterminateMorningBool}
-									onChange={(e)=>handleParentChange(e, "morning")}
+						{
+							(hours.morning_hours) && 
+								<FormControlLabel
+									label="Toute la matinée"
+									control={
+										<Checkbox
+											checked={hours.morning_hours.length === props.checkedMorningHourly.length}
+											indeterminate={indeterminateMorningBool}
+											onChange={(e)=>handleParentChange(e, "morning")}
+										/>
+									}
 								/>
-							}
-						/>
+						}
 						<Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
 							{
 								hours.morning_hours.map((hour)=>{
@@ -167,16 +170,19 @@ const TimeSelect = (props) => {
 						</Box>
 					</FormControl>
 					<FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-						<FormControlLabel
-							label="Toute l'après-midi"
-							control={
-								<Checkbox
-									checked={hours.afternoon_hours.length === props.checkedAfternoonHourly.length}
-									indeterminate={indeterminateAfternoonBool}
-									onChange={(e)=>handleParentChange(e, "afternoon")}
+						{
+							(hours.afternoon_hours.length > 0) && 
+								<FormControlLabel
+									label="Toute l'après-midi"
+									control={
+										<Checkbox
+											checked={hours.afternoon_hours.length === props.checkedAfternoonHourly.length}
+											indeterminate={indeterminateAfternoonBool}
+											onChange={(e)=>handleParentChange(e, "afternoon")}
+										/>
+									}
 								/>
-							}
-						/>
+						}
 						<Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
 							{
 								hours.afternoon_hours.map((hour)=>{

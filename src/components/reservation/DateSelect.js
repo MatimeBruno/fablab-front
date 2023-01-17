@@ -10,7 +10,6 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
-import { zonedTimeToUtc } from 'date-fns-tz'
 
 const DateSelect = (props) => {
 	
@@ -33,10 +32,10 @@ const DateSelect = (props) => {
 		while (date <= endDate)
 		{
 			if (!isWeekend(date))
-			{
-				let newInstDate = new Date(date)
-				let localDate = zonedTimeToUtc(newInstDate, 'Indian/Reunion');
-				dates.push(localDate.toISOString().substring(0, 10));
+			{	
+				const myUtcDate = new Date(date) 
+				myUtcDate.setUTCDate(date.getDate());
+				dates.push(myUtcDate.toISOString());
 			}
 			date.setDate(date.getDate() + 1);
 		}

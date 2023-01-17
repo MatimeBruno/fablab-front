@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // Date time thingd
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -16,6 +16,7 @@ import Button from '@mui/material/Button';
 const localizer = momentLocalizer(moment)
 
 const CalendarEvents = (props) => {
+	const [selected, setSelected] = useState();
 	const reachedPin = [];
 	const spacesByResa = {};
 	const reservations = [];
@@ -95,10 +96,12 @@ const CalendarEvents = (props) => {
 						<Calendar
 							localizer={localizer}
 							events={reservations}
+							selected={selected}
 							startAccessor="start"
 							endAccessor="end"
 							culture='fr'
 							style={{ height: 500 }}
+							onSelectEvent={(event)=>props.handleClickOpen(event)}
 						/>
 						:
 						""

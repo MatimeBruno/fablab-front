@@ -11,18 +11,22 @@ import {reserve} from '../../actions/reservation';
 import { zonedTimeToUtc, formatInTimeZone } from 'date-fns-tz'
 
 const Reservation = (props) => {
-	const [activeStep, setActiveStep] = useState(0);
 	const [reservations, setReservation] = useState([]);
 	const [reservStatus, setReservStatus] = useState(null);
 	const [isRecapDone, setIsRecapDone] = useState(false);
 
 	useEffect(()=>{
-		if(!isRecapDone && reservations.length === 0 && props.showRecap)
+		if(props.showRecap && !isRecapDone)
 		{
 			setReservation(getResaData());
-			setIsRecapDone(true);
+			setIsRecapDone(reservations.length > 0);
 		}
 	})
+
+	const handleClose = () => {
+		setIsRecapDone(false);
+		props.setShowRecap(false)
+	}
 
 	//Formatage et empaquetage des données de réservation pour les envoyées à l'API
 	const getResaData = () => {
@@ -56,6 +60,9 @@ const Reservation = (props) => {
 			const start_date_instance = new Date(date)
 			const end_date_instance = new Date(date)
 
+			start_date_instance.setDate(start_date_instance.getDate()-1);
+			end_date_instance.setDate(end_date_instance.getDate()-1);
+
 			while (cpt < filtHourArr.length)
 			{
 				start_date_instance.setHours(filtHourArr[cpt]);
@@ -85,7 +92,7 @@ const Reservation = (props) => {
 	return (
 		<Dialog
 			open={props.showRecap}
-			onClose={() => props.setShowRecap(false)}
+			onClose={handleClose}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 			fullWidth={true}
@@ -98,11 +105,9 @@ const Reservation = (props) => {
 			<List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
 				{
 					(reservations.length > 0) && reservations.map((resaDate, i)=>{
-						const dateStartValue = new Date(resaDate.date_debut_resa);
-						const dateEndValue = new Date(resaDate.date_fin_resa);
-						const localDateValue = formatInTimeZone(dateStartValue, 'Indian/Reunion', 'dd/MM/yyyy');
-						const startHour = zonedTimeToUtc(dateStartValue, 'Indian/Reunion').getHours();
-						const endHour = zonedTimeToUtc(dateEndValue, 'Indian/Reunion').getHours();
+						const localDateValue = formatInTimeZone(resaDate.date_debut_resa, 'Indian/Reunion', 'dd/MM/yyyy');
+						const startHour = zonedTimeToUtc(resaDate.date_debut_resa, 'Indian/Reunion').getHours();
+						const endHour = zonedTimeToUtc(resaDate.date_fin_resa, 'Indian/Reunion').getHours();
 
 						return(
 							<ListItem key={`resa-${i}`}>
@@ -117,7 +122,7 @@ const Reservation = (props) => {
 			</List>
 		</DialogContent>
 		<DialogActions>
-			<Button onClick={() => props.setShowRecap(false)}>
+			<Button onClick={handleClose}>
 				Annuler
 			</Button>
 			<Button variant="contained" onClick={submitResevation}>

@@ -65,11 +65,6 @@ const Home = (props) => {
 			setShowRecap(false);
 			setError(true);
 		}
-
-		console.log(dates)
-		console.log(checkedMorningHourly)
-		console.log(checkedAfternoonHourly)
-		console.log(checkedSpace)
 	}
 
 	return (
