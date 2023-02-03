@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 // Material ui details reservation
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -21,6 +22,8 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Dialog from '@mui/material/Dialog';
 import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 // Material icon import
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
@@ -90,8 +93,11 @@ const MyReservation = (props) => {
 	}
 
 	const handleChangeView = (event, nextView) => {
-		setView(nextView);
-	  };
+		if (nextView !== null)
+		{
+			setView(nextView);
+		}
+	};
 
 	return(
 		<Box sx={{ flexGrow: 1 }}>
@@ -135,11 +141,19 @@ const MyReservation = (props) => {
 					</ToggleButtonGroup>
 				</Grid>
 			</Grid>
-			<CalendarEvents
-				userReservs={userReservs}
-				view={view}
-				handleClickOpen={handleClickOpen}
-			/>
+			{
+				!userReservs ? 
+					<Alert severity="info">
+						<AlertTitle>Info</AlertTitle>
+						Vous n'avez aucune réservations — <strong><Link to="/">Cliquez ici pour réserver</Link></strong>
+					</Alert>
+					:
+					<CalendarEvents
+						userReservs={userReservs}
+						view={view}
+						handleClickOpen={handleClickOpen}
+					/>
+			}
 			{
 				openDetails && (
 					<Dialog

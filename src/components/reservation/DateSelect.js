@@ -26,15 +26,13 @@ const DateSelect = (props) => {
 	 */
 	const getDatesInRange = (startDate, endDate) => {
 		const date = new Date(startDate.getTime());
-		
 		const dates = [];
-		
 		while (date <= endDate)
 		{
 			if (!isWeekend(date))
 			{	
-				const myUtcDate = new Date(date) 
-				myUtcDate.setUTCDate(date.getDate());
+				const myUtcDate = new Date(date.getTime()) 
+				myUtcDate.setUTCDate(myUtcDate.getDate());
 				dates.push(myUtcDate.toISOString());
 			}
 			date.setDate(date.getDate() + 1);

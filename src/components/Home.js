@@ -132,6 +132,19 @@ const Home = (props) => {
 				checkedSpace={checkedSpace}
 				showRecap={showRecap}
 				setShowRecap={setShowRecap}
+				setIsHoursChecked={setIsHoursChecked}
+				setCheckedSpace={setCheckedSpace}
+				setDates={setDates}
+				setCheckedMorningHourly={setCheckedMorningHourly}
+				setCheckedAfternoonHourly={setCheckedAfternoonHourly}
+				setRangeDate={setRangeDate}
+				initialDate={[
+					{
+						startDate: valideDate(today),
+						endDate: valideDate(today),
+						key: 'selection'
+					}
+				]}
 			/>
 			<Snackbar
 				open={error}

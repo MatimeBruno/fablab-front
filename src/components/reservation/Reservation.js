@@ -7,8 +7,10 @@ import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import {reserve} from '../../actions/reservation';
-import { zonedTimeToUtc, formatInTimeZone } from 'date-fns-tz'
+import { zonedTimeToUtc, formatInTimeZone } from 'date-fns-tz';
 
 const Reservation = (props) => {
 	const [reservations, setReservation] = useState([]);
@@ -25,7 +27,7 @@ const Reservation = (props) => {
 
 	const handleClose = () => {
 		setIsRecapDone(false);
-		props.setShowRecap(false)
+		props.setShowRecap(false);
 	}
 
 	//Formatage et empaquetage des données de réservation pour les envoyées à l'API
@@ -87,50 +89,75 @@ const Reservation = (props) => {
 	const submitResevation = async () => {
 		const reservRes = await reserve(props.user, reservations, props.checkedSpace);
 		setReservStatus(reservRes);
+
+		if (reservRes !== false)
+		{
+			props.setCheckedSpace([])
+			props.setDates([])
+			props.setCheckedMorningHourly([])
+			props.setCheckedAfternoonHourly([])
+		}
+
+		props.setShowRecap(false);
+		props.setIsHoursChecked(false);
+		props.setRangeDate(props.initialDate);
 	}
 
 	return (
-		<Dialog
-			open={props.showRecap}
-			onClose={handleClose}
-			aria-labelledby="alert-dialog-title"
-			aria-describedby="alert-dialog-description"
-			fullWidth={true}
-			maxWidth={"sm"}
-		>
-		<DialogTitle id="alert-dialog-title">
-			Récapitulatif
-		</DialogTitle>
-		<DialogContent>
-			<List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-				{
-					(reservations.length > 0) && reservations.map((resaDate, i)=>{
-						const localDateValue = formatInTimeZone(resaDate.date_debut_resa, 'Indian/Reunion', 'dd/MM/yyyy');
-						const startHour = zonedTimeToUtc(resaDate.date_debut_resa, 'Indian/Reunion').getHours();
-						const endHour = zonedTimeToUtc(resaDate.date_fin_resa, 'Indian/Reunion').getHours();
+		<>
+			<Dialog
+				open={props.showRecap}
+				onClose={handleClose}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+				fullWidth={true}
+				maxWidth={"sm"}
+			>
+				<DialogTitle id="alert-dialog-title">
+					Récapitulatif
+				</DialogTitle>
+				<DialogContent>
+					<List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+						{
+							(reservations.length > 0) && reservations.map((resaDate, i)=>{
+								const localDateValue = formatInTimeZone(resaDate.date_debut_resa, 'Indian/Reunion', 'dd/MM/yyyy');
+								const startHour = zonedTimeToUtc(resaDate.date_debut_resa, 'Indian/Reunion').getHours();
+								const endHour = zonedTimeToUtc(resaDate.date_fin_resa, 'Indian/Reunion').getHours();
 
-						return(
-							<ListItem key={`resa-${i}`}>
-								<ListItemText 
-									primary={`Le ${localDateValue}`} 
-									secondary={`${startHour}h - ${endHour}h`}
-								/>
-							</ListItem>
-						)
-					})
-				}
-			</List>
-		</DialogContent>
-		<DialogActions>
-			<Button onClick={handleClose}>
-				Annuler
-			</Button>
-			<Button variant="contained" onClick={submitResevation}>
-				Reserver
-			</Button>
-		</DialogActions>
-		</Dialog>
-
+								return(
+									<ListItem key={`resa-${i}`}>
+										<ListItemText 
+											primary={`Le ${localDateValue}`} 
+											secondary={`${startHour}h - ${endHour}h`}
+										/>
+									</ListItem>
+								)
+							})
+						}
+					</List>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleClose}>
+						Annuler
+					</Button>
+					<Button variant="contained" onClick={submitResevation}>
+						Reserver
+					</Button>
+				</DialogActions>
+			</Dialog>
+			<Snackbar 
+				open={reservStatus !== null} 
+				autoHideDuration={6000} 
+				onClose={()=>setReservStatus(null)}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center'
+				}}>
+				<MuiAlert onClose={()=>setReservStatus(null)} severity={(reservStatus !== false) ? "success" : "error"} sx={{ width: '100%' }}>
+					{(reservStatus !== false) ? "Réservation effectuée avec succès" : "La réservation n'a pas pu être effectuée"}
+				</MuiAlert>
+			</Snackbar>
+		</>
 	);
 }
 

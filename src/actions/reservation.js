@@ -26,7 +26,7 @@ const reserve = async (id_user, reservations, listIdEspace) => {
 	}
 	catch (error)
 	{	
-		return error.response.data;
+		return false;
 	}
 }
 
@@ -65,16 +65,6 @@ const checkHours = async (reservations, listIdEspace) => {
 					}
 				}
 			}
-			// if (cpt > 0 && hour === response.data[cpt-1]+1 && hour !== 13)
-			// {
-			// 	hour_str += response.data[cpt-1]
-			// 	hour_str += `_${hour}`
-			// }
-			// else
-			// {
-			// 	hour_str += hour
-			// 	hour_str += `_${response.data[cpt+1]}`
-			// }
 
 			++cpt;
 		}
