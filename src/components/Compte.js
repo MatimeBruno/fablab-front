@@ -14,6 +14,7 @@ const Compte = (props) => {
 	const [newPassword, setNewPassword] = useState("");
 	const [oldPassword, setOldPassword] = useState("");
 	const [passwordIsUpdated, setPasswordIsUpdated] = useState(null);
+	const [passErr, setPassError] = useState(null);
 
 	const handleDisconnect = () => {
 		logout();
@@ -29,6 +30,21 @@ const Compte = (props) => {
 	}
 
 	const handleChangePassword = async () => {
+		console.log(oldPassword.length);
+		if (oldPassword.length < 1)
+		{
+			setPassError("Identifiez-vous avec votre mot de passe actuel");
+			return;
+		}
+
+		if (newPassword.length < 8)
+		{
+			setPassError("Veuillez définir un mot de passe robuste (minimum 8 caractère)");
+			return;
+		}
+
+		setPassError(null);
+
 		if (props.user !== null)
 		{
 			const updatedPassword = await updatePassword(props.user, oldPassword, newPassword);
@@ -76,7 +92,7 @@ const Compte = (props) => {
 						onChange={(e)=>setNewPassword(e.target.value)} 
 						value={newPassword} 
 						type="password"
-						id="outlined-basic" 
+						id="outlined-basic-confirm" 
 						label="Nouveau mot de passe" 
 						variant="outlined"
 					 />
@@ -89,6 +105,15 @@ const Compte = (props) => {
 							sx={{m:5}}
 						>
 							{passwordIsUpdated ? "Mot de passe changé avec succès" : "Le mot de passe n'a pas pu être changé"}
+						</Alert>
+				}
+				{
+					(passErr !== null) && 
+						<Alert 
+							severity={"error"}
+							sx={{m:5}}
+						>
+							{passErr}
 						</Alert>
 				}
 			</Card>
