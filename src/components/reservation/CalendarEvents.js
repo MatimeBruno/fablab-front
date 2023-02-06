@@ -12,6 +12,7 @@ import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import '../../style/calendar.css';
 
 const localizer = momentLocalizer(moment)
 

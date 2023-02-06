@@ -6,9 +6,12 @@ import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormHelperText from '@mui/material/FormHelperText';
+// My imports
 import {checkHours} from '../../actions/reservation';
+import useIsMobile from '../../hook/screenSize';
 
 const TimeSelect = (props) => {
+	let flexDirSetting = 'unset';
 	const [hours, setHours] = useState(null);
 
 	const checkingHours = async () => {
@@ -104,6 +107,11 @@ const TimeSelect = (props) => {
 
 	}
 
+	if(useIsMobile())
+	{
+		flexDirSetting = 'column';
+	}
+
 	if (hours === null)
 	{
 		return <p>Choisissez vos dates et vos espaces</p>
@@ -133,7 +141,7 @@ const TimeSelect = (props) => {
 						/>
 					}
 				/>
-				<Box sx={{ display: 'flex', ml: 3 }}>
+				<Box sx={{ display: 'flex', flexDirection: flexDirSetting, ml: 3 }}>
 					<FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
 						{
 							(hours.morning_hours) && 
