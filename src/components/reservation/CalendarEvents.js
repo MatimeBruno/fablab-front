@@ -93,16 +93,20 @@ const CalendarEvents = (props) => {
 					</List>
 					:
 					(props.view === 'calendar') ?
-						<Calendar
-							localizer={localizer}
-							events={reservations}
-							selected={selected}
-							startAccessor="start"
-							endAccessor="end"
-							culture='fr'
-							style={{ height: 500 }}
-							onSelectEvent={(event)=>props.handleClickOpen(event)}
-						/>
+						<>
+							<br></br>
+							<br></br>
+							<Calendar
+								localizer={localizer}
+								events={reservations}
+								selected={selected}
+								startAccessor="start"
+								endAccessor="end"
+								culture='fr'
+								style={{ height: 500 }}
+								onSelectEvent={(event)=>props.handleClickOpen(event)}
+							/>
+						</>
 						:
 						""
 			}

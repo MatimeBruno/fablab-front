@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import Grid from '@mui/material/Grid';
 //Material icons imports
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
@@ -40,56 +41,62 @@ const ResponsiveAppBar = (props) => {
 				<Toolbar disableGutters>
 					{/* Mobile */}
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-						<img src={EDN_logo} alt="Logo de l'EDN" width="100%" sx={{mr: 4,}}/>
-						{
-							(props.user !== null) ?
-								<Stack direction="row" spacing={2} sx={{ml:20}}>
-									<IconButton
-										size="large"
-										aria-label="account of current user"
-										aria-controls={openMenuMobile ? "menu-appbar" : undefined}
-										aria-haspopup="true"
-										aria-expanded={openMenuMobile ? 'true' : undefined}
-										color="inherit"
-										onClick={handleMenuMobile}
-									>
-										<MenuIcon color='primary' />
-									</IconButton>
-									<Menu
-										open={openMenuMobile}
-										anchorEl={showMobileMenu}
-										onClose={()=>setShoMobileMenu(null)}
-										id="menu-appbar"
-										anchorOrigin={{
-											vertical: 'bottom',
-											horizontal: 'left',
-										}}
-										keepMounted
-										transformOrigin={{
-											vertical: 'top',
-											horizontal: 'left',
-										}}
-										sx={{
-											display: { xs: 'block', md: 'none' },
-											position:"absolute"
-										}}
-										MenuListProps={{
-											'aria-labelledby': 'basic-button',
-										}}
-									>
-										{pages.map((page, i) => (
-											<MenuItem key={page}>
-												<Link to={link[i]}>
-													{iconMenu[i] && iconMenu[i]}
-													<Typography textAlign="center">&nbsp;{page}</Typography>
-												</Link>
-											</MenuItem>
-										))}
-									</Menu>
-								</Stack>
-								:
-								<img src={EDN_logo} alt="Logo de l'EDN" width="20%" sx={{mr: 4,}}/>
-						}
+						<Grid container sx={{alignItems:'center'}}>
+							<Grid item xs={5} md={5}>
+								<img src={EDN_logo} alt="Logo de l'EDN" width="100%" sx={{mr: 4,}}/>
+							</Grid>
+							<Grid item xs={3} md={3} style={{textAlign:"end"}}>
+								{
+									(props.user !== null) ?
+										<Stack direction="row" spacing={2} sx={{ml:20}}>
+											<IconButton
+												size="large"
+												aria-label="account of current user"
+												aria-controls={openMenuMobile ? "menu-appbar" : undefined}
+												aria-haspopup="true"
+												aria-expanded={openMenuMobile ? 'true' : undefined}
+												color="inherit"
+												onClick={handleMenuMobile}
+											>
+												<MenuIcon color='primary' />
+											</IconButton>
+											<Menu
+												open={openMenuMobile}
+												anchorEl={showMobileMenu}
+												onClose={()=>setShoMobileMenu(null)}
+												id="menu-appbar"
+												anchorOrigin={{
+													vertical: 'bottom',
+													horizontal: 'left',
+												}}
+												keepMounted
+												transformOrigin={{
+													vertical: 'top',
+													horizontal: 'left',
+												}}
+												sx={{
+													display: { xs: 'block', md: 'none' },
+													position:"absolute"
+												}}
+												MenuListProps={{
+													'aria-labelledby': 'basic-button',
+												}}
+											>
+												{pages.map((page, i) => (
+													<MenuItem key={page}>
+														<Link to={link[i]}>
+															{iconMenu[i] && iconMenu[i]}
+															<Typography textAlign="center">&nbsp;{page}</Typography>
+														</Link>
+													</MenuItem>
+												))}
+											</Menu>
+										</Stack>
+										:
+										<img src={EDN_logo} alt="Logo de l'EDN" width="20%" sx={{mr: 4,}}/>
+								}
+							</Grid>
+						</Grid>
 					</Box>
 
 					{/* Desktop */}

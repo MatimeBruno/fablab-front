@@ -107,7 +107,7 @@ const MyReservation = (props) => {
 				<Grid item xs={8} md={8}>
 					<h1 className='text-center'>Vos réservations</h1>
 				</Grid>
-				<Grid item xs={2} md={2}>
+				<Grid item xs={7} md={2}>
 					{
 						(view === 'list') &&
 							<FormControl fullWidth>
@@ -125,7 +125,7 @@ const MyReservation = (props) => {
 							</FormControl>
 					}
 				</Grid >
-				<Grid item xs={2} md={2} style={{textAlign:"end"}}>
+				<Grid item xs={2} md={2} style={{textAlign:"end",paddingLeft:10}}>
 					<ToggleButtonGroup
 						orientation="horizontal"
 						value={view}
