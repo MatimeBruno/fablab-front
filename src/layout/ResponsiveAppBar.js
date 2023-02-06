@@ -85,8 +85,14 @@ const ResponsiveAppBar = (props) => {
 												{pages.map((page, i) => (
 													<MenuItem key={page}>
 														<Link to={link[i]}>
-															{iconMenu[i] && iconMenu[i]}
-															<Typography textAlign="center">&nbsp;{page}</Typography>
+															<Grid container sx={{alignItems:'center'}}>
+																<Grid item xs={3} md={3}>
+																	{iconMenu[i] && iconMenu[i]}
+																</Grid>
+																<Grid item xs={3} md={3}>
+																	<Typography textAlign="center">&nbsp;{page}</Typography>
+																</Grid>
+															</Grid>
 														</Link>
 													</MenuItem>
 												))}

@@ -30,7 +30,6 @@ const Compte = (props) => {
 	}
 
 	const handleChangePassword = async () => {
-		console.log(oldPassword.length);
 		if (oldPassword.length < 1)
 		{
 			setPassError("Identifiez-vous avec votre mot de passe actuel");
